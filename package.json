@@ -7,7 +7,7 @@
   "author": "Stefan Malzner <stefan@adlk.io>",
   "license": "MIT",
   "config": {
-    "serviceURL": "https://discordapp.com/login",
+    "serviceURL": "https://canary.discordapp.com/login",
     "message": "",
     "popup": [],
     "hasNotificationSound": true,
@@ -16,8 +16,10 @@
     "hasTeamID": false,
     "hasPredefinedUrl": true,
     "hasCustomUrl": false,
-    "webviewOptions": {
-      "disablewebsecurity": ""
+    "hansenFastPreload": true,
+    "hansenWebviewOptions": {
+      "disablewebsecurity": true,
+      "nodeintegration": true
     }
   }
 }

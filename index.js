@@ -1,8 +1,8 @@
+// render process: main window
+
+'use strict';
 module.exports = Franz => class Discord extends Franz {
   overrideUserAgent() {
-    const useragent = window.navigator.userAgent;
-    const parts = useragent.split('(KHTML, like Gecko)');
-
-    return parts.join('(KHTML, like Gecko) discord/0.0.250').replace('Electron', 'Discord').replace('Franz', 'Discord');
+    return 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/0.0.204 Chrome/56.0.2924.87 Discord Canary/1.6.15 Safari/537.36';
   }
 };
