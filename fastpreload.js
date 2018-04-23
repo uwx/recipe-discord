@@ -31,9 +31,10 @@ process.once('loaded', () => {
   require('./scriptycord/externals/tokenGetter.js');
   require('./scriptycord/externals/cssInjection.js');
 
-  // should we wait for dom-ready?
-  require('./scriptycord/loader.js')().catch(err => {
-    console.error('[fastpreload] promise rejected', err);
+  require('electron').remote.getCurrentWebContents().once('dom-ready', () => { // TODO i havent tested if this works
+    require('./scriptycord/loader.js')().catch(err => {
+      console.error('[fastpreload] promise rejected', err);
+    });
   });
 });
 
