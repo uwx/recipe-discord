@@ -44,7 +44,7 @@ function unregisterProtocol(protocol, scheme) {
       if (err) reject(err);
       else resolve();
     });
-  })
+  });
 }
 
 /*
