@@ -1,0 +1,6 @@
+node_modules
+example
+test
+package-lock.json
+shrinkwrap.yml
+docs.json
