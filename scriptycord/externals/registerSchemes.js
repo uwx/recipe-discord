@@ -5,6 +5,7 @@ const { protocolRoot } = require('../paths.js');
 
 process.once('loaded', () => {
   const webContents = electron.remote.getCurrentWebContents();
+  // need to be in dom-ready for isProtocolHandled to work (i think?)
   webContents.once('dom-ready', () => {
     const protocol = webContents.session.protocol;
     protocol.isProtocolHandled('hansen', async isHandled => {
@@ -28,6 +29,7 @@ process.once('loaded', () => {
         }
       });
 
+      // i havent determined whether this needs to be up here, or it needs to be present at all
       electron.webFrame.registerURLSchemeAsPrivileged('hansen');
       electron.webFrame.registerURLSchemeAsPrivileged('extension');
       electron.webFrame.registerURLSchemeAsPrivileged('chrome-extension');
