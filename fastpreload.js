@@ -14,7 +14,9 @@ require('./preload/notificationScreenPolyfill.js');
 
 require(desktopCoreAppRoot + '/mainScreenPreload');
 
-process.once('loaded', function () {
+require('./scriptycord/externals/registerSchemes.js');
+
+process.once('loaded', () => {
   global.DiscordNative.nativeModules.requireModule = (name, remote) => {
     console.log('DiscordNative.nativeModules.requireModule: looking for:', name, 'remote:', remote || false);
     //if (!/^discord_/.test(name) && name !== \'erlpack\') {\n      throw new Error(\'"\' + String(name) + \'" is not a whitelisted native module\');
@@ -24,9 +26,16 @@ process.once('loaded', function () {
       return require(path.join(userDataPath, appTitle, 'modules', name));
     }
   };
-});
 
-// TODO: add patched notificationScreen
+  require('./scriptycord/externals/preloadScript.js');
+  require('./scriptycord/externals/tokenGetter.js');
+  require('./scriptycord/externals/cssInjection.js');
+
+  // should we wait for dom-ready?
+  require('./scriptycord/loader.js')().catch(err => {
+    console.error('[fastpreload] promise rejected', err);
+  });
+});
 
 /*global.mainAppDirname = mod;
 
