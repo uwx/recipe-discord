@@ -1,5 +1,40 @@
 'use strict';
 
+// TODO figure out a way to deinit RPC on franz reload
+/*
+
+My idea:
+in src/lib/Menu.js:
+
+    tpl[1].submenu.unshift({
+      label: intl.formatMessage(menuItems.reloadService),
+      id: 'reloadService', // TODO: needed?
+      accelerator: `${cmdKey}+R`,
+      click: () => {
+        if (this.stores.user.isLoggedIn
+          && this.stores.services.enabled.length > 0) {
+          this.actions.service.reloadActive();
+        } else {
+          window.location.reload();
+        }
+      },
+    }, {
+      label: intl.formatMessage(menuItems.reloadFranz),
+      accelerator: `${cmdKey}+Shift+R`,
+      click: () => {
+        window.location.reload();
+      },
+    });
+
+* add a new entry
+* entry sends an IPC signal to the webview
+* scriptycord listens for the signal and does its (async) cleanup duty
+* once scriptycord is done it sends an IPC signal back to franz
+* franz reloads the page normally
+
+ */
+
+
 const request = require('request-promise-any');
 
 module.exports = {
