@@ -48,7 +48,8 @@ it's passed to `init`. you're encouraged to store it in your own variable if nee
 you should try and avoid that.
 
 additionally, this means you can use `require` to access node modules, or scriptycord internals! see the
-internal API section for info on how to do that.
+[internal API](https://github.com/uwx/scriptycord-franz-recipe#internal-api) section for info on how to
+do that.
 
 as a last note, keep in mind that because of the electron process lifecycle, hitting Reload Service in
 franz doesn't "clean up" like refreshing does in regular canary. this means that, for instance, RPC might
@@ -73,7 +74,8 @@ to avoid creating too many event listeners.)
   * `author`: pretty plugin author for console display
 
 * `scope`: no longer a replacement for module.exports, now passed to `init()`
-  * contains all the exports from domutils as convenience
+  * contains all the exports from [domutils](https://github.com/uwx/scriptycord-franz-recipe#scriptycordutilsdomutils)
+    as convenience
   * `log([...message])`: like `console.log`, but prefixed with your plugin's name
   * `error([...message])`: like `console.error`, but prefixed with your plugin's name
   * `alog` and `aerror`: these are for internal use, don't use them or i will be very upset!
@@ -104,13 +106,13 @@ to avoid creating too many event listeners.)
 * `bdRoot`: `%APPDATA%\BetterDiscord` (root folder for BetterDiscord data)
 * `bdPluginsRoot`: `%APPDATA%\BetterDiscord\plugins` (BD plugins folder)
 
-#### ../scriptycord/utils/helpers
+#### ../../scriptycord/utils/helpers
 * `hansenExecute(func)`: Executes a function, synchronously or async, and provides a better log to console
   if execution succeeds or fails.
 * `catchAsync(promise, errorMessage, def)`: returns a promise that resolves to the result of `promise` if
   it completes without errors, otherwise prints `errorMessage` to console and resolve to `def`
 
-#### ../scriptycord/utils/domutils
+#### ../../scriptycord/utils/domutils
 * `addHook(selector, id, callback[, prettyCallbackName])`: register a CSS hook for an element listener.
   * `selector`: string selector for the element
   * `id`: unique ID for the hook
