@@ -40,3 +40,17 @@ function handleNotificationShow(e, notification) {
 function logNotif(type) {
   return (a, b) => console.log('[notificationScreenPolyfill:' + type + '] log notif', a, b);
 }
+
+/*
+Clean up ipcMain listeners since they are not destroyed when refreshing
+
+Attempting to call a function in a renderer window that has been closed or released.
+Function provided here: Object.<anonymous> (C:\Users\Rafael\AppData\Roaming\Franz\recipes\dev\recipe-discord\preload\notificationScreenPolyfill.js:21:9
+ */
+window.addEventListener('unload', () => {
+  //alert('unloading!');
+  ipcMain.removeAllListeners(IPC_NOTIFICATIONS_CLEAR);
+  ipcMain.removeAllListeners(IPC_NOTIFICATION_SHOW);
+  ipcMain.removeAllListeners(IPC_NOTIFICATION_CLICK);
+  ipcMain.removeAllListeners(IPC_NOTIFICATION_CLOSE);
+});
