@@ -1,0 +1,19 @@
+{
+	"folders":
+	[
+		{
+			"folder_exclude_patterns":
+			[
+				"node_modules"
+			],
+			"path": "C:\\Users\\Rafael\\Documents\\GitHub\\franz"
+		},
+		{
+			"folder_exclude_patterns":
+			[
+				"node_modules"
+			],
+			"path": "."
+		}
+	]
+}
