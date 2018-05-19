@@ -37,9 +37,10 @@ test on, there's no plans for it at the moment. however, anyone willing to port 
 welcome!
 
 ## plugins
-BetterDiscord plugins can be placed in `data\plugins` or `%APPDATA%\BetterDiscord\plugins`
+you can place plugins in `data\plugins` or `%APPDATA%\BetterDiscord\plugins`. they can use the
+BetterDiscord API or the scriptycord API.
 
-the recipe comes with the plugins i made for myself, under the same license as the rest of the project.
+this recipe comes with the plugins i made for myself, under the same license as the rest of the project.
 
 ### API
 since the move to franz, plugins are `require`-d like a regular nodejs module. as such, stuff that you
