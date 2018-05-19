@@ -8,7 +8,7 @@ process.once('loaded', () => {
   // need to be in dom-ready for isProtocolHandled to work (i think?)
   webContents.once('dom-ready', () => {
     const protocol = webContents.session.protocol;
-    protocol.isProtocolHandled('hansen', async isHandled => {
+    protocol.isProtocolHandled('hansen', async isHandled => { // FIXME: is there a race condition caused by CSS injection happening before we register the protocol?
       console.log('[got callback');
       if (isHandled) {
         console.warn('[registerSchemes] hansen already handled, removing');
