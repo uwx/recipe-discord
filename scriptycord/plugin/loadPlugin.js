@@ -6,7 +6,11 @@ const { firstLine } = require('../utils/string.js');
 const { addHook, addStyle, addScript, isLightTheme } = require('../utils/domutils.js');
 
 // on page load (#friends visible)
+// to reduce allocations, this is now a pointer to plugin object rather than a fresh function wrapping plugin.start
 const loadedHooks = exports.loadedHooks = [];
+
+// on refresh through Franz, might not always be called
+const deinitHooks = exports.deinitHooks = [];
 // on any message element added (arg1 is element: .message-text)
 const onMessageTextLoadedHandlers = exports.onMessageTextLoadedHandlers = [];
 // on any message group added (arg1 is element: .message-group)
@@ -84,10 +88,11 @@ function evalRegularPlugin(scope, path, fileName, fileNameNoExt) {
   }
   if (plugin.start) {
     plugin.start.displayName = `[${prettyPluginName}].start()`;
-    loadedHooks.push(() => {
-      alog('start');
-      plugin.start();
-    });
+    loadedHooks.push(plugin);
+  }
+  if (plugin.deinit) {
+    plugin.deinit.displayName = `[${prettyPluginName}].deinit()`;
+    deinitHooks.push(plugin.deinit);
   }
   // add hooks
   if (plugin.hooks) {
@@ -153,10 +158,7 @@ function evalBdPlugin(scope, scriptText, fileName, metaText) {
   }
   if (pl.start) {
     pl.start.displayName = `[${prettyPluginName}].start()`;
-    loadedHooks.push(() => {
-      alog('starting');
-      pl.start();
-    });
+    loadedHooks.push(pl); // having `this` context is important here, so we pass the plugin rather than the start function
   }
   
   alog(`[${pl.getVersion()}] ${pl.getName()} by ${pl.getAuthor()}\n"${pl.getDescription()}"`);
