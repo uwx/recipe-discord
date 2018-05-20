@@ -52,16 +52,14 @@ additionally, this means you can use `require` to access node modules, or script
 [internal API](https://github.com/uwx/scriptycord-franz-recipe#internal-api) section for info on how to
 do that.
 
-as a last note, keep in mind that because of the electron process lifecycle, hitting Reload Service in
-franz doesn't "clean up" like refreshing does in regular canary. this means that, for instance, RPC might
-get stuck. i'm currently working on a solution for asynchronous resource disposal, but for synchronous
-stuff just use the `unload` event on `window`. (scriptycord will eventually have a dedicated API for this,
-to avoid creating too many event listeners.)
-
 * `exports` or `module.exports`: add your plugin definition here! it can contain any of the following:
   * `init => (scope)`: executed instantly after script eval.
   * `start => ()`: called once either `#friends` or `.chat` elements are loaded. use this to run code that
     relies on the DOM being loaded
+  * `deinit => ()`: called when "Reload Scriptycord" is clicked in franz. because of the electron process
+    lifecycle, hitting Reload Service in franz doesn't "clean up" like refreshing does in regular canary.
+    this means that, for instance, RPC might get stuck. for this reason, you should use `deinit` for all
+    your cleanup logic; you can have it return a Promise to be awaited or any other value to be ignored.
   * `hooks[selector, callback(element)]`: an array that should contain arrays inside it, to add CSS
   	hooks for element listeners:
  	  * `selector`: string selector for the element
