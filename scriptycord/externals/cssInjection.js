@@ -1,26 +1,20 @@
 'use strict';
 
+const { ipcRenderer, remote: { ipcMain } } = require('electron');
+
 const { hansenExecute } = require('../utils/helpers.js');
 const { recipeRoot } = require('../paths.js');
+
+let uniqueId = 0;
 
 hansenExecute(async () => {
   const fs = require('fsxt');
   const path = require('path');
   
-  // okay, so don't think i need to worry about less doing weird stuff when i require it through nodejs even though it's electron, see https://github.com/less/less.js/tree/3.x/lib/less-browser
-  const less = require('less');
-
-  less.logger.addListener({
-    debug: msg => console.debug('[cssInjection][less][debug]', msg),
-    info: msg => console.info('[cssInjection][less][info]', msg),
-    warn: msg => console.warn('[cssInjection][less][warn]', msg),
-    error: msg => console.error('[cssInjection][less][error]', msg),
-  });
-
   async function render(css, name) {
     try {
       const startTime = new Date().getTime();
-      const result = (await less.render(css)).css;
+      const result = await queueRender(css);
       const endTime = new Date().getTime();
       console.info('[cssInjection][render] rendered', name, 'in', endTime - startTime, 'ms');
       return result;
@@ -28,6 +22,23 @@ hansenExecute(async () => {
       console.error('[cssInjection] failed with', e);
       return '';
     }
+  }
+
+  // queue a less compilation on the main process
+  function queueRender(css) {
+    return new Promise(resolve => {
+      function callback(event, outCss, outId) {
+        if (outId !== id) return;
+
+        ipcRenderer.removeListener('HANSEN_LESS_COMPILE_REPLY', callback);
+        resolve(outCss);
+      }
+
+      const id = 'scriptycord-' + (uniqueId++);
+
+      ipcRenderer.on('HANSEN_LESS_COMPILE_REPLY', callback);
+      ipcRenderer.send('HANSEN_LESS_COMPILE', css, id);
+    });
   }
 
   async function applyAndWatchCSS(cssPath, name, ext, useLess = false) {
