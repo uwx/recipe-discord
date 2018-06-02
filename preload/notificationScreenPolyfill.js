@@ -28,9 +28,11 @@ function handleNotificationShow(e, notification) {
       id: 0,
       title: 'Ged (#general, General Talk)' }*/
 
+  const icon = notification.icon.startsWith('http') ? notification.icon : ('http://canary.discordapp.com' + notification.icon);
+
   const notif = new Notification(notification.title, {
     body: notification.body,
-    icon: notification.icon
+    icon
   });
   notif.onclick = () => {
     console.log('sending notif click:', notif);
