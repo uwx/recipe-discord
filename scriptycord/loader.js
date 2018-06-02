@@ -72,7 +72,7 @@ function handleDeinit(plugins) {
   });
   
   const { ipcRenderer, remote: { ipcMain } } = require('electron');
-  ipcMain.on('HANSEN_WEBVIEW_START_TIDY', async () => {
+  ipcMain.once('HANSEN_WEBVIEW_START_TIDY', async () => {
     // no need to check if(disposed) here, this will always run before onunload
     disposed = true;
 
