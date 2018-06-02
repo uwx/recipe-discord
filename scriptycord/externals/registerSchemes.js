@@ -12,7 +12,7 @@ module.exports = (async () => {
   await eventAsyncOnce(webContents, 'dom-ready');
 
   const protocol = webContents.session.protocol;
-  const isHandled = isProtocolHandled(protocol, 'hansen');
+  const isHandled = await isProtocolHandled(protocol, 'hansen');
 
   console.log('[got callback');
   if (isHandled) {
