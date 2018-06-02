@@ -14,7 +14,13 @@ require('./preload/notificationScreenPolyfill.js');
 
 require(desktopCoreAppRoot + '/mainScreenPreload');
 
-require('./scriptycord/externals/registerSchemes.js');
+require('./scriptycord/externals/registerSchemes.js').then(() => { // process.loaded has fired
+  // TODO: do we need to move more stuff up here?
+  require('./scriptycord/externals/cssInjection.js');
+}).catch(e => {
+  alert('Failed registering hansen:// scheme, see console for details');
+  console.error('Failed registering hansen:// scheme', e);
+});
 
 process.once('loaded', () => {
   global.DiscordNative.nativeModules.requireModule = (name, remote) => {
@@ -29,9 +35,8 @@ process.once('loaded', () => {
 
   require('./scriptycord/externals/preloadScript.js');
   require('./scriptycord/externals/tokenGetter.js');
-  require('./scriptycord/externals/cssInjection.js');
 
-  require('electron').remote.getCurrentWebContents().once('dom-ready', () => { // TODO i havent tested if this works
+  require('electron').remote.getCurrentWebContents().once('dom-ready', () => {
     require('./scriptycord/loader.js')().catch(err => {
       console.error('[fastpreload] promise rejected', err);
     });

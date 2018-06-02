@@ -1,42 +1,56 @@
 'use strict';
 const electron = require('electron');
 const path = require('path');
+
 const { protocolRoot } = require('../paths.js');
 
-process.once('loaded', () => {
+module.exports = (async () => {
+  await eventAsyncOnce(process, 'loaded');
+
   const webContents = electron.remote.getCurrentWebContents();
   // need to be in dom-ready for isProtocolHandled to work (i think?)
-  webContents.once('dom-ready', () => {
-    const protocol = webContents.session.protocol;
-    protocol.isProtocolHandled('hansen', async isHandled => { // FIXME: is there a race condition caused by CSS injection happening before we register the protocol?
-      console.log('[got callback');
-      if (isHandled) {
-        console.warn('[registerSchemes] hansen already handled, removing');
-        await unregisterProtocol(protocol, 'hansen');
-      }
+  await eventAsyncOnce(webContents, 'dom-ready');
 
-      protocol.registerFileProtocol('hansen', (req, callback) => {
-        var url = req.url.substr(9);
-        if (url.endsWith('/')) {
-          url = url.slice(0, -1);
-        }
-        
-        console.log('[HANSEN] url', url);
-        callback({path: path.normalize(protocolRoot + '/' + url)});
-      }, error => {
-        if (error) {
-          console.error('[HANSEN] Failed to register protocol', error);
-        }
-      });
+  const protocol = webContents.session.protocol;
+  const isHandled = isProtocolHandled(protocol, 'hansen');
 
-      // i havent determined whether this needs to be up here, or it needs to be present at all
-      electron.webFrame.registerURLSchemeAsPrivileged('hansen');
-      electron.webFrame.registerURLSchemeAsPrivileged('extension');
-      electron.webFrame.registerURLSchemeAsPrivileged('chrome-extension');
-    });
+  console.log('[got callback');
+  if (isHandled) {
+    console.warn('[registerSchemes] hansen already handled, removing');
+    await unregisterProtocol(protocol, 'hansen');
+  }
+
+  protocol.registerFileProtocol('hansen', (req, callback) => {
+    var url = req.url.substr(9);
+    if (url.endsWith('/')) {
+      url = url.slice(0, -1);
+    }
+    
+    console.log('[HANSEN] url', url);
+    callback({path: path.normalize(protocolRoot + '/' + url)});
+  }, error => {
+    if (error) {
+      console.error('[HANSEN] Failed to register protocol', error);
+    }
   });
 
-});
+  // i havent determined whether this needs to be up here, or it needs to be present at all
+  electron.webFrame.registerURLSchemeAsPrivileged('hansen');
+  electron.webFrame.registerURLSchemeAsPrivileged('extension');
+  electron.webFrame.registerURLSchemeAsPrivileged('chrome-extension');
+})();
+
+function eventAsyncOnce(obj, ev) {
+  return new Promise(resolve => {
+    obj.once(ev, resolve);
+  });
+}
+
+function isProtocolHandled(protocol, name) {
+  return new Promise(resolve => {
+    protocol.isProtocolHandled(name, resolve);
+  });
+}
 
 function unregisterProtocol(protocol, scheme) {
   return new Promise((resolve, reject) => {
