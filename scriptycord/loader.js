@@ -72,7 +72,7 @@ function handleDeinit(plugins) {
   });
   
   const { ipcRenderer, remote: { ipcMain } } = require('electron');
-  ipcMain.on('HANSEN_WEVIEW_START_TIDY', async () => {
+  ipcMain.on('HANSEN_WEBVIEW_START_TIDY', async () => {
     // no need to check if(disposed) here, this will always run before onunload
     disposed = true;
 
@@ -85,10 +85,10 @@ function handleDeinit(plugins) {
           await returned;
         }
       }
-      ipcRenderer.send('HANSEN_WEVIEW_TIDY_FINISHED', true); // true: success
+      ipcRenderer.send('HANSEN_WEBVIEW_TIDY_FINISHED', true); // true: success
     } catch (e) {
       console.error('[loader:deinit:tidy]', e);
-      ipcRenderer.send('HANSEN_WEVIEW_TIDY_FINISHED', false); // false: not success
+      ipcRenderer.send('HANSEN_WEBVIEW_TIDY_FINISHED', false); // false: not success
     }
     dlog('cleanup finished, talked back to Franz, this message should not appear maybe?');
   });
