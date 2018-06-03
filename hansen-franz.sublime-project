@@ -14,6 +14,15 @@
 				"node_modules"
 			],
 			"path": "."
+		},
+		{
+			"path": "C:\\Users\\Rafael\\AppData\\Roaming\\Franz\\recipes\\dev\\recipe-whatsapp"
+		},
+		{
+			"path": "C:\\Users\\Rafael\\AppData\\Roaming\\Franz\\recipes\\dev\\recipe-telegram"
+		},
+		{
+			"path": "C:\\Users\\Rafael\\AppData\\Roaming\\Franz\\recipes\\dev\\recipe-steam"
 		}
 	]
 }
