@@ -1,5 +1,7 @@
 'use strict';
 
+const hooks = {};
+
 function addHook(selector, id, callback, prettyCallbackName = 'scriptycord hook: ' + id) {
   addStyle(`
   @keyframes ${id} {  
@@ -17,13 +19,16 @@ function addHook(selector, id, callback, prettyCallbackName = 'scriptycord hook:
   `);
   
   callback.displayName = `[${prettyCallbackName}]."${selector}"`;
-
-  document.addEventListener('animationstart', function(event) {
-    if (event.animationName == id) {
-      callback(event.target);
-    }
-  }, true);
+  hooks[id] = callback;
 }
+
+document.addEventListener('animationstart', event => {
+  const animName = event.animationName;
+  const hook = hooks[animName];
+  if (hook && hook(event.target)) {
+    delete hooks[animName];
+  }
+}, true);
 
 function addStyle(css) {
   const style = document.createElement('style');
