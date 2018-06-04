@@ -24,7 +24,7 @@ require('./scriptycord/externals/registerSchemes.js').then(() => { // process.lo
 
 process.once('loaded', () => {
   global.DiscordNative.nativeModules.requireModule = (name, remote) => {
-    console.log('DiscordNative.nativeModules.requireModule: looking for:', name, 'remote:', remote || false);
+    //console.log('DiscordNative.nativeModules.requireModule: looking for:', name, 'remote:', remote || false);
     //if (!/^discord_/.test(name) && name !== \'erlpack\') {\n      throw new Error(\'"\' + String(name) + \'" is not a whitelisted native module\');
     if (remote) {
       throw new Error(); // i haven't figured out how this one works yet
