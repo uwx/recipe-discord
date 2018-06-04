@@ -108,7 +108,7 @@ async function updateVLCActivity() {
 
 async function updateActivity() {
   while (running) {
-    console.log('[rpc] tick! state:', state);
+    if (state !== 0) console.log('[rpc] tick! state:', state);
     await sleep(10e3);
     if (!running) break;
 
