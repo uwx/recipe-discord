@@ -10,4 +10,4 @@ module.exports = Franz => class Discord extends Franz {
 const win = require('electron').remote.getCurrentWindow();
 win.on('unmaximize', () => {
   setTimeout(() => win.maximize(), 0);
-})
+});
