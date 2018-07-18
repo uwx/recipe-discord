@@ -38,6 +38,11 @@ module.exports = (async () => {
   electron.webFrame.registerURLSchemeAsPrivileged('hansen');
   electron.webFrame.registerURLSchemeAsPrivileged('extension');
   electron.webFrame.registerURLSchemeAsPrivileged('chrome-extension');
+
+  // nuke csp (not needed?)
+  electron.webFrame.registerURLSchemeAsPrivileged('http');
+  electron.webFrame.registerURLSchemeAsPrivileged('https');
+  electron.webFrame.registerURLSchemeAsPrivileged('file');
 })();
 
 function eventAsyncOnce(obj, ev) {
