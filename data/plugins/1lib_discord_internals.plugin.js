@@ -454,7 +454,7 @@
 				"authors": [
 					"Samogot"
 				],
-				"version": "1.8",
+				"version": "1.11",
 				"description": "Discord Internals lib",
 				"repository": "https://github.com/samogot/betterdiscord-plugins.git",
 				"homepage": "https://github.com/samogot/betterdiscord-plugins/tree/master/v2/1LibDiscordInternals",
@@ -802,9 +802,11 @@
 	
 		    const WebpackModules = (() => {
 	
-		        const req = webpackJsonp([], {
+		        const req = typeof(webpackJsonp) === "function" ? webpackJsonp([], {
 		            '__extra_id__': (module, exports, req) => exports.default = req
-		        }, ['__extra_id__']).default;
+		        }, ['__extra_id__']).default : webpackJsonp.push([[], {
+		            '__extra_id__': (module, exports, req) => module.exports = req
+		        }, [['__extra_id__']]]);
 		        delete req.m['__extra_id__'];
 		        delete req.c['__extra_id__'];
 	
@@ -968,7 +970,7 @@
 		            function getDisplayName(owner) {
 		                const type = owner.type;
 		                const constructor = owner.stateNode && owner.stateNode.constructor;
-		                return type && type.displayName || constructor && constructor.displayName || null;
+		                return type && type.displayName || constructor && (constructor.displayName || constructor.name) || null;
 		            }
 	
 		            function classFilter(owner) {
@@ -978,7 +980,7 @@
 	
 		            let curr = getInternalInstance(e);
 		            while (curr) {
-		                if (classFilter(curr)) {
+		                if (classFilter(curr) && !(curr instanceof HTMLElement)) {
 		                    return curr.stateNode;
 		                }
 		                curr = curr.return;
@@ -1044,7 +1046,7 @@
 		            }
 		        }
 	
-		        const reactRootInternalInstance = () => getInternalInstance(document.getElementById('app-mount').firstElementChild);
+		        const reactRootInternalInstance = () => document.getElementById("app-mount")._reactRootContainer._internalRoot.current;
 	
 		        /**
 		         * Generator for recursive traversal of rendered react component tree. Only component instances are returned.
@@ -1469,17 +1471,34 @@
 		            }
 		        });
 	
+		        /**
+		         * Scan all components already rendered in DOM, and add new ones to the internal dictionary.
+		         * This function may be called manually to rescan DOM in case if some components are failed to be detected automatically
+		         */
+		        const scanAllRendered = () => {
+		            for (let component of Renderer.recursiveComponents()) {
+		                put(component.constructor);
+		            }
+		        };
+	
 		        monkeyPatch(React, 'createElement', {
 		            displayName: 'React',
 		            before: ({methodArguments}) => {
 		                put(methodArguments[0]);
 		            }
 		        });
-		        for (let component of Renderer.recursiveComponents()) {
-		            put(component.constructor);
-		        }
 	
-		        return {get, getAll, setName};
+		        React.Component.prototype.componentWillMount = function() {
+		            put(this.constructor);
+		        };
+	
+		        React.Component.prototype.UNSAFE_componentWillMount = function() {
+		            put(this.constructor);
+		        };
+	
+		        scanAllRendered();
+	
+		        return {get, getAll, setName, scanAllRendered};
 	
 		    })();
 	
