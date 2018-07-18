@@ -18,6 +18,7 @@
     "hasCustomUrl": false,
     "hansenFastPreload": true,
     "hansenPartition": "scriptycord",
+    "hansenDisableCSP": true,
     "hansenWebviewOptions": {
       "disablewebsecurity": true,
       "nodeintegration": true
